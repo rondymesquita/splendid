@@ -41,13 +41,13 @@ jobs:
         with:
           filename: 'splendid.zip'
           path: ./dist
-      # - name: Changelog
-      #   uses: scottbrenner/generate-changelog-action@master
-      #   id: Changelog
-      - name: 'Build Changelog'
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
         id: Changelog
-        uses: mikepenz/release-changelog-builder-action@main
-        env:
+      # - name: 'Build Changelog'
+      #   id: Changelog
+      #   uses: mikepenz/release-changelog-builder-action@main
+      #   env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: |
           echo ${{toJson(steps.Changelog.outputs)}}
