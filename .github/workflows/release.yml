@@ -44,7 +44,7 @@ jobs:
       # - name: Changelog
       #   uses: scottbrenner/generate-changelog-action@master
       #   id: Changelog
-      - NAME: LATEST TAG
+      - name: get latest tag
         run: echo "LATEST_TAG=$(git describe --abbrev=0)" >> $GITHUB_ENV
       - name: 'Build Changelog'
         id: github_release
