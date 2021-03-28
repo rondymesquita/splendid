@@ -55,6 +55,7 @@ jobs:
           failOnError: 'true'
           commitMode: 'true'
           fromTag: ${{env.LATEST_TAG}}
+          toTag: ${{env.SEM_VERSION}}
       - run: echo "${{ steps.github_release.outputs.changelog }}"
       - run: echo "${{ steps.github_release.outputs.fromTag }}"
       - run: echo "${{ steps.github_release.outputs.toTag }}"
