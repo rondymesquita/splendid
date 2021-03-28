@@ -49,6 +49,15 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          failOnError: true
+          commitMode: true
+      - run: echo "${{ steps.github_release.outputs.changelog }}"
+      - run: echo "${{ steps.github_release.outputs.fromTag }}"
+      - run: echo "${{ steps.github_release.outputs.toTag }}"
+      - run: echo "${{ steps.github_release.outputs.owner }}"
+      - run: echo "${{ steps.github_release.outputs.repo }}"
+      - run: echo "${{ steps.github_release.outputs.failed }}"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
