@@ -44,14 +44,17 @@ jobs:
       # - name: Changelog
       #   uses: scottbrenner/generate-changelog-action@master
       #   id: Changelog
+      - NAME: LATEST TAG
+        run: echo "LATEST_TAG=$(git describe --abbrev=0)" >> $GITHUB_ENV
       - name: 'Build Changelog'
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          failOnError: true
-          commitMode: true
+          failOnError: 'true'
+          commitMode: 'true'
+          fromTag: ${{env.LATEST_TAG}}
       - run: echo "${{ steps.github_release.outputs.changelog }}"
       - run: echo "${{ steps.github_release.outputs.fromTag }}"
       - run: echo "${{ steps.github_release.outputs.toTag }}"
