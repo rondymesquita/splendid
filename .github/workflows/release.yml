@@ -9,12 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: get latest tag
-        run: echo "LATEST_TAG=$(git describe --abbrev=0)" >> $GITHUB_ENV
       - name: Set git info
         run: |
           git config user.name ${{github.event.head_commit.author.name}}
           git config user.email ${{github.event.head_commit.author.email}}
+      - name: get latest tag
+        run: echo "LATEST_TAG=$(git describe --abbrev=0)" >> $GITHUB_ENV
       - name: Version patch
         if: ${{ contains(github.event.head_commit.message, 'patch:') }}
         run: echo "SEM_VERSION=$(npm version patch)" >> $GITHUB_ENV
