@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - name: get latest tag
+        run: echo "LATEST_TAG=$(git describe --abbrev=0)" >> $GITHUB_ENV
       - name: Set git info
         run: |
           git config user.name ${{github.event.head_commit.author.name}}
@@ -44,8 +46,6 @@ jobs:
       # - name: Changelog
       #   uses: scottbrenner/generate-changelog-action@master
       #   id: Changelog
-      - name: get latest tag
-        run: echo "LATEST_TAG=$(git describe --abbrev=0)" >> $GITHUB_ENV
       - run: echo "${{env.LATEST_TAG}}" "${{env.SEM_VERSION}}"
       - name: 'Build Changelog'
         id: github_release
