@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Set git info
+        run: |
+          git config user.name ${{github.event.head_commit.author.name}}
+          git config user.email ${{github.event.head_commit.author.email}}
+      - name: Version patch
+        if: ${{ contains(github.event.head_commit.message, 'patch:') }}
+        run: echo "SEM_VERSION=$(npm version patch)" >> $GITHUB_ENV
+      - name: Version minor
+        if: ${{ contains(github.event.head_commit.message, 'minor:') }}
+        run: echo "SEM_VERSION=$(npm version minor)" >> $GITHUB_ENV
+      - name: Version major
+        if: ${{ contains(github.event.head_commit.message, 'major:') }}
+        run: echo "SEM_VERSION=$(npm version major)" >> $GITHUB_ENV
+      - name: Version patch when no semantic
+        if: ${{ !contains(github.event.head_commit.message, 'patch:') && !contains(github.event.head_commit.message, 'minor:') && !contains(github.event.head_commit.message, 'major:') }}
+        run: echo "SEM_VERSION=$(npm version patch)" >> $GITHUB_ENV
+      - name: Push new version
+        run: |
+          git push
+          git push --tag
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Build dist
+        run: |
+          npm ci
+          npm run build
+      - name: Create dist zip
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'splendid.zip'
+          path: ./dist
+      # - name: Changelog
+      #   uses: scottbrenner/generate-changelog-action@master
+      #   id: Changelog
+      - name: 'Build Changelog'
+        id: Changelog
+        uses: mikepenz/release-changelog-builder-action@{latest-release}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          echo ${{toJson(steps.Changelog.outputs)}}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{env.SEM_VERSION}}
+          release_name: ${{env.SEM_VERSION}}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./splendid.zip
+          asset_name: splendid.zip
+          asset_content_type: application/zip
