@@ -45,8 +45,8 @@ jobs:
       #   uses: scottbrenner/generate-changelog-action@master
       #   id: Changelog
       - name: 'Build Changelog'
-        id: Changelog
-        uses: mikepenz/release-changelog-builder-action@main
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
@@ -57,8 +57,7 @@ jobs:
         with:
           tag_name: ${{env.SEM_VERSION}}
           release_name: ${{env.SEM_VERSION}}
-          body: |
-            ${{ steps.Changelog.outputs.changelog }}
+          body: ${{steps.github_release.outputs.changelog}}
           draft: false
           prerelease: false
       - name: Upload Release Asset
