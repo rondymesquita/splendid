@@ -1,4 +1,4 @@
-# 🚀 Welcome to your new awesome project!2
+# 🚀 Welcome to your new awesome project!
 
 This project has been created using **webpack scaffold**, you can now run
 
