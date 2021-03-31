@@ -11,6 +11,8 @@ jobs:
       - uses: actions/checkout@master
         with:
           fetch-depth: 0
+          token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+      - uses: hmarr/debug-action@v2
       - name: Set git info
         run: |
           git config user.name ${{github.event.head_commit.author.name}}
