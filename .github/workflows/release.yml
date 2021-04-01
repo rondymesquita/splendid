@@ -39,3 +39,4 @@ jobs:
       - name: Push new version
         run: |
           git push --tag
+          git push
