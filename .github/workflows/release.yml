@@ -8,9 +8,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-        with:
-          token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN}}
+      - name: Checkout
+        uses: actions/checkout@master
       - uses: hmarr/debug-action@v2
       - name: Set git info
         run: |
@@ -34,20 +33,19 @@ jobs:
         run: echo "SEM_VERSION=$(npm version patch)" >> $GITHUB_ENV
       - name: Push new version
         run: |
-          git push
           git push --tag
       - uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      - name: Build dist
-        run: |
-          npm ci
-          npm run build
-      - name: Create dist zip
-        uses: thedoctor0/zip-release@master
-        with:
-          filename: 'splendid.zip'
-          path: ./dist
+#       - name: Build dist
+#         run: |
+#           npm ci
+#           npm run build
+#       - name: Create dist zip
+#         uses: thedoctor0/zip-release@master
+#         with:
+#           filename: 'splendid.zip'
+#           path: ./dist
       # - name: Changelog
       #   uses: scottbrenner/generate-changelog-action@master
       #   id: Changelog
