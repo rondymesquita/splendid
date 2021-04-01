@@ -48,3 +48,8 @@ jobs:
           # branch: ${{ github.ref }}
           branch: main
           tags: true
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+          branch: main
