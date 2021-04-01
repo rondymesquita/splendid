@@ -40,3 +40,4 @@ jobs:
         run: |
           git push --tag
           git push
+          echo "Done!"
