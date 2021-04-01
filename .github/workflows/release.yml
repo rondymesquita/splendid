@@ -31,57 +31,7 @@ jobs:
       - name: Version patch when no semantic
         if: ${{ !contains(github.event.head_commit.message, 'patch:') && !contains(github.event.head_commit.message, 'minor:') && !contains(github.event.head_commit.message, 'major:') }}
         run: echo "SEM_VERSION=$(npm version patch)" >> $GITHUB_ENV
+      - run: echo "${{env.LATEST_TAG}}" "${{env.SEM_VERSION}}"
       - name: Push new version
         run: |
           git push --tag
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-#       - name: Build dist
-#         run: |
-#           npm ci
-#           npm run build
-#       - name: Create dist zip
-#         uses: thedoctor0/zip-release@master
-#         with:
-#           filename: 'splendid.zip'
-#           path: ./dist
-      # - name: Changelog
-      #   uses: scottbrenner/generate-changelog-action@master
-      #   id: Changelog
-      - run: echo "${{env.LATEST_TAG}}" "${{env.SEM_VERSION}}"
-      - name: 'Build Changelog'
-        id: github_release
-        uses: mikepenz/release-changelog-builder-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          failOnError: 'true'
-          commitMode: 'true'
-      - run: echo "${{ steps.github_release.outputs.changelog }}"
-      - run: echo "${{ steps.github_release.outputs.fromTag }}"
-      - run: echo "${{ steps.github_release.outputs.toTag }}"
-      - run: echo "${{ steps.github_release.outputs.owner }}"
-      - run: echo "${{ steps.github_release.outputs.repo }}"
-      - run: echo "${{ steps.github_release.outputs.failed }}"
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{env.SEM_VERSION}}
-          release_name: ${{env.SEM_VERSION}}
-          body: ${{steps.github_release.outputs.changelog}}
-          draft: false
-          prerelease: false
-      - name: Upload Release Asset
-        id: upload_release_asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./splendid.zip
-          asset_name: splendid.zip
-          asset_content_type: application/zip
