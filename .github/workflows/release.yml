@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
         with:
-          ref: developmain
+          ref: main
           fetch-depth: 0
           token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
       - uses: hmarr/debug-action@v2
