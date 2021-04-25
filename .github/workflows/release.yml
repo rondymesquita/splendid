@@ -38,7 +38,6 @@ jobs:
       - run: echo "${{env.LATEST_TAG}}" "${{env.SEM_VERSION}}"
       - name: Push new version
         run: |
-          git pull
           git push --tag
           git push
           echo "Done!!"
