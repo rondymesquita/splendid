@@ -36,11 +36,11 @@ jobs:
         if: ${{ !contains(github.event.head_commit.message, 'patch:') && !contains(github.event.head_commit.message, 'minor:') && !contains(github.event.head_commit.message, 'major:') }}
         run: echo "SEM_VERSION=$(npm version patch)" >> $GITHUB_ENV
       - run: echo "${{env.LATEST_TAG}}" "${{env.SEM_VERSION}}"
-      - name: Push new version
-        run: |
-          git push --tag
-          git push
-          echo "Done!!"
+      # - name: Push new version
+      #   run: |
+      #     git push --tag
+      #     git push
+      #     echo "Done!!"
       # - name: Push changes
       #   uses: ad-m/github-push-action@master
       #   with:
