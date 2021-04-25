@@ -25,17 +25,17 @@ jobs:
           echo "LATEST_TAG=$(git describe --abbrev=0)" >> $GITHUB_ENV
       - name: Version patch
         if: ${{ contains(github.event.head_commit.message, 'patch:') }}
-        run: echo "SEM_VERSION=$(npm version patch)" >> $GITHUB_ENV
+        run: echo "CURRENT_TAG=$(npm version patch)" >> $GITHUB_ENV
       - name: Version minor
         if: ${{ contains(github.event.head_commit.message, 'minor:') }}
-        run: echo "SEM_VERSION=$(npm version minor)" >> $GITHUB_ENV
+        run: echo "CURRENT_TAG=$(npm version minor)" >> $GITHUB_ENV
       - name: Version major
         if: ${{ contains(github.event.head_commit.message, 'major:') }}
-        run: echo "SEM_VERSION=$(npm version major)" >> $GITHUB_ENV
+        run: echo "CURRENT_TAG=$(npm version major)" >> $GITHUB_ENV
       - name: Version patch when no semantic
         if: ${{ !contains(github.event.head_commit.message, 'patch:') && !contains(github.event.head_commit.message, 'minor:') && !contains(github.event.head_commit.message, 'major:') }}
-        run: echo "SEM_VERSION=$(npm version patch)" >> $GITHUB_ENV
-      - run: echo "${{env.LATEST_TAG}}" "${{env.SEM_VERSION}}"
+        run: echo "CURRENT_TAG=$(npm version patch)" >> $GITHUB_ENV
+      - run: echo "${{env.LATEST_TAG}}" "${{env.CURRENT_TAG}}"
       # - name: Push new version
       #   run: |
       #     git push --tag
@@ -48,19 +48,25 @@ jobs:
       #     # branch: ${{ github.ref }}
       #     branch: main
       #     tags: true
-      - name: 'Build Changelog'
+      # - name: 'Build Changelog'
+      #   id: github_release
+      #   uses: mikepenz/release-changelog-builder-action@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     configuration: 'config.json'
+      # with:
+      #   failOnError: 'true'
+      #   commitMode: 'true'
+      #   fromTag: ${{env.LATEST_TAG}}
+      #   toTag: ${{env.CURRENT_TAG}}
+      #   token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
         id: github_release
-        uses: mikepenz/release-changelog-builder-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          configuration: 'config.json'
-        # with:
-        #   failOnError: 'true'
-        #   commitMode: 'true'
-        #   fromTag: ${{env.LATEST_TAG}}
-        #   toTag: ${{env.SEM_VERSION}}
-        #   token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+          from-tag: ${{env.LATEST_TAG}}
+          to-tag: ${{env.CURRENT_TAG}}
       - run: echo "${{ steps.github_release.outputs.changelog }}"
       - run: echo "${{ steps.github_release.outputs.fromTag }}"
       - run: echo "${{ steps.github_release.outputs.toTag }}"
@@ -71,8 +77,8 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          tag_name: ${{env.CURRENT_TAG}}
+          release_name: ${{env.CURRENT_TAG}}
           body: ${{steps.github_release.outputs.changelog}}
           draft: false
           prerelease: false
