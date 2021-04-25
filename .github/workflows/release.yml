@@ -1,6 +1,5 @@
 name: Release
 
-
 on:
   push:
     branches: [develop]
@@ -49,6 +48,31 @@ jobs:
           # branch: ${{ github.ref }}
           branch: main
           tags: true
+      - name: 'Build Changelog'
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          failOnError: 'true'
+          commitMode: 'true'
+      - run: echo "${{ steps.github_release.outputs.changelog }}"
+      - run: echo "${{ steps.github_release.outputs.fromTag }}"
+      - run: echo "${{ steps.github_release.outputs.toTag }}"
+      - run: echo "${{ steps.github_release.outputs.owner }}"
+      - run: echo "${{ steps.github_release.outputs.repo }}"
+      - run: echo "${{ steps.github_release.outputs.failed }}"
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: ${{steps.github_release.outputs.changelog}}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: Push changes
       #   uses: ad-m/github-push-action@master
       #   with:
