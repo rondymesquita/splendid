@@ -10,10 +10,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-        # with:
-        #   ref: main
-        #   fetch-depth: 0
-        #   token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
       - uses: hmarr/debug-action@v2
       - name: Set git info
         run: |
