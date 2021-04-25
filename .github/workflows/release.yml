@@ -68,7 +68,7 @@ jobs:
           # from-tag: v3.1.50
           # to-tag: v3.1.51
           from-tag: ${{env.LATEST_TAG}}
-          to-tag: ${{env.CURRENT_TAG}}
+          # to-tag: ${{env.CURRENT_TAG}}
       - run: echo "${{ steps.github_release.outputs.changelog }}"
       - run: echo "${{ steps.github_release.outputs.fromTag }}"
       - run: echo "${{ steps.github_release.outputs.toTag }}"
