@@ -75,18 +75,18 @@ jobs:
       - run: echo "${{ steps.github_release.outputs.owner }}"
       - run: echo "${{ steps.github_release.outputs.repo }}"
       - run: echo "${{ steps.github_release.outputs.failed }}"
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{env.CURRENT_TAG}}
-          release_name: ${{env.CURRENT_TAG}}
-          body: ${{steps.github_release.outputs.changelog}}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          #
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   with:
+      #     tag_name: ${{env.CURRENT_TAG}}
+      #     release_name: ${{env.CURRENT_TAG}}
+      #     body: ${{steps.github_release.outputs.changelog}}
+      #     draft: false
+      #     prerelease: false
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #
       # - name: Push changes
       #   uses: ad-m/github-push-action@master
       #   with:
