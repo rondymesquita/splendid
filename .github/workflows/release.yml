@@ -57,6 +57,8 @@ jobs:
         with:
           failOnError: 'true'
           commitMode: 'true'
+          fromTag: ${{env.LATEST_TAG}}
+          toTag: ${{env.SEM_VERSION}}
       - run: echo "${{ steps.github_release.outputs.changelog }}"
       - run: echo "${{ steps.github_release.outputs.fromTag }}"
       - run: echo "${{ steps.github_release.outputs.toTag }}"
@@ -72,6 +74,7 @@ jobs:
           body: ${{steps.github_release.outputs.changelog}}
           draft: false
           prerelease: false
+          token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: Push changes
